@@ -2,8 +2,11 @@ package com.course.project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,10 +16,22 @@ import android.widget.TextView;
 
 public class ProductView extends AppCompatActivity {
 
+    private BroadcastReceiver br;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_view);
+
+        br = new Broad();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction("com.course.Project.product");
+        filter.addAction("com.course.Project.site");
+        registerReceiver(br, filter);
+
+        Intent in = new Intent();
+        in.setAction("com.course.Project.product");
+        sendBroadcast(in);
 
         ImageView first_image = (ImageView)findViewById(R.id.imageView2);
         ImageView second_image = (ImageView)findViewById(R.id.imageView3);
@@ -41,6 +56,10 @@ public class ProductView extends AppCompatActivity {
                 Uri uri = Uri.parse(url);
                 Intent inte = new Intent(Intent.ACTION_VIEW, uri);
                 context.startActivity(inte);
+
+                Intent in = new Intent();
+                in.setAction("com.course.Project.site");
+                sendBroadcast(in);
             }
         });
     }

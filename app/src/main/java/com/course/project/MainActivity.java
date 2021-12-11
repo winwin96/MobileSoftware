@@ -5,7 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +21,20 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView myRecyclerView;
     private RecyclerView.LayoutManager myLayoutManager;
+    private BroadcastReceiver br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        br = new Broad();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction("com.course.Project.Call");
+        filter.addAction("com.course.Project.SMS");
+        filter.addAction("com.course.Project.Location");
+        registerReceiver(br, filter);
+
+        this.registerReceiver(br, filter);
 
         Button telephone = (Button)findViewById(R.id.button2);
         telephone.setOnClickListener(new View.OnClickListener(){
@@ -30,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:01012345678"));
                 startActivity(intent);
+
+                Intent in = new Intent();
+                in.setAction("com.course.Project.Call");
+                sendBroadcast(in);
             }
         });
 
@@ -38,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 sendEmail();
+
+                Intent in = new Intent();
+                in.setAction("com.course.Project.SMS");
+                sendBroadcast(in);
             }
         });
 
@@ -48,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = Uri.parse("geo:37.5581,126.9982?q=동국대학교 신공학관");
                 Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                 startActivity(intent);
+
+                Intent in = new Intent();
+                in.setAction("com.course.Project.Location");
+                sendBroadcast(in);
             }
         });
 
@@ -95,3 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
